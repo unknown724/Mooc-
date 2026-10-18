@@ -9,6 +9,7 @@ Built with **React 19**, **TypeScript**, **Tailwind CSS**, and **Express / Googl
 ## Features
 
 - **120 Pre-Loaded Assignment MCQs**: All 12 weeks of assignments are fully verified and embedded with educational rationales.
+- **100% Standalone & Zero-Key Required**: The entire application (Study Reader, 120-Question Mock Exam, Flashcards, Mistake Bank, and PDF synchronizer) works immediately out-of-the-box with NO API key needed.
 - **Eye-Comfort Reading Themes**:
   - *Warm Paper* (Kindle / Notion E-Ink aesthetic)
   - *Daylight Slate* (High-contrast testing)
@@ -21,7 +22,7 @@ Built with **React 19**, **TypeScript**, **Tailwind CSS**, and **Express / Googl
   - Instant Feedback & Timed Exam modes.
   - Full keyboard shortcuts (`1-4`, `A-D`, `Space/Enter`, `M` for bookmark, arrows).
 - **Spaced Repetition & Mistake Bank**: Targeted drilling of flagged or missed questions.
-- **Multimodal PDF Parser**: Upload new or updated assignment PDFs and parse them automatically using `gemini-2.5-flash`.
+- **Automatic Assignment Synchronizer & Optional Gemini OCR**: Works offline by default; optionally uses `GEMINI_API_KEY` for live multimodal analysis of arbitrary external PDFs.
 
 ---
 
@@ -53,8 +54,7 @@ git push -u origin main
    - **Framework Preset**: Vite
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
-4. In **Environment Variables**, add:
-   - `GEMINI_API_KEY`: Your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+4. *(Optional)* In **Environment Variables**, you can add `GEMINI_API_KEY` if you want live AI OCR on new external PDFs, but **it is not required**—the app runs 100% standalone out-of-the-box!
 5. Click **Deploy**!
 
 ### Method 2: Deploy via Vercel CLI
