@@ -616,9 +616,16 @@ export const StudyReaderView: React.FC<StudyReaderViewProps> = ({
 
                 {/* Cognitive Trigger Hook */}
                 {enhanced.keywordHook && (
-                  <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-950/25 px-2.5 py-1 rounded-lg border border-emerald-500/20 w-fit">
-                    <Zap className="w-3 h-3 text-emerald-400 shrink-0" />
-                    <span>Memory Trigger: <strong>{enhanced.keywordHook}</strong></span>
+                  <div 
+                    className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl border w-fit"
+                    style={{
+                      backgroundColor: 'var(--accent-soft-bg)',
+                      borderColor: 'var(--accent-color)',
+                      color: 'var(--accent-color)',
+                    }}
+                  >
+                    <Zap className="w-3.5 h-3.5 fill-current shrink-0" />
+                    <span>Memory Trigger: <strong style={{ color: 'var(--text-primary)' }}>{enhanced.keywordHook}</strong></span>
                   </div>
                 )}
 

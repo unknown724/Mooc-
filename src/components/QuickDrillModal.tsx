@@ -213,14 +213,23 @@ export const QuickDrillModal: React.FC<QuickDrillModalProps> = ({
                 const isCorrect = opt.label.toLowerCase() === currentQ.correctOption.toLowerCase();
                 const showFeedback = selectedOption !== null;
 
-                let btnStyle = 'border-slate-800 hover:border-slate-700 bg-white/[0.02]';
+                let optBg = 'var(--app-bg)';
+                let optBorder = 'var(--border-color)';
+                let optColor = 'var(--text-primary)';
+
                 if (showFeedback) {
                   if (isCorrect) {
-                    btnStyle = 'border-emerald-500/60 bg-emerald-500/15 text-emerald-200';
+                    optBg = 'var(--correct-bg)';
+                    optBorder = 'var(--correct-border)';
+                    optColor = 'var(--correct-text)';
                   } else if (isSelected) {
-                    btnStyle = 'border-rose-500/60 bg-rose-500/15 text-rose-200';
+                    optBg = 'var(--incorrect-bg)';
+                    optBorder = 'var(--incorrect-border)';
+                    optColor = 'var(--incorrect-text)';
                   } else {
-                    btnStyle = 'opacity-35 border-slate-800/60';
+                    optBg = 'var(--app-bg)';
+                    optBorder = 'var(--border-color)';
+                    optColor = 'var(--text-muted)';
                   }
                 }
 
@@ -229,17 +238,29 @@ export const QuickDrillModal: React.FC<QuickDrillModalProps> = ({
                     key={opt.label}
                     disabled={showFeedback}
                     onClick={() => handleSelectOption(opt.label)}
-                    className={`w-full flex items-center gap-3 p-3 text-left rounded-xl border text-sm transition-all ${btnStyle}`}
+                    className="w-full flex items-center gap-3 p-3 text-left rounded-xl border text-sm transition-all cursor-pointer"
+                    style={{
+                      backgroundColor: optBg,
+                      borderColor: optBorder,
+                      color: optColor,
+                    }}
                   >
-                    <span className="w-6 h-6 rounded-lg bg-white/5 border border-white/10 text-xs font-mono font-bold flex items-center justify-center shrink-0 uppercase">
+                    <span 
+                      className="w-6 h-6 rounded-lg border text-xs font-mono font-bold flex items-center justify-center shrink-0 uppercase"
+                      style={{
+                        backgroundColor: 'var(--hover-bg)',
+                        borderColor: 'var(--border-color)',
+                        color: 'var(--text-secondary)',
+                      }}
+                    >
                       {opt.label}
                     </span>
                     <span className="flex-1 text-xs sm:text-sm leading-normal">{opt.text}</span>
                     {showFeedback && isCorrect && (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: 'var(--correct-border)' }} />
                     )}
                     {showFeedback && isSelected && !isCorrect && (
-                      <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                      <XCircle className="w-4 h-4 shrink-0" style={{ color: 'var(--incorrect-border)' }} />
                     )}
                   </button>
                 );
@@ -249,23 +270,33 @@ export const QuickDrillModal: React.FC<QuickDrillModalProps> = ({
             {/* Feedback & Keyword Hook Bar */}
             {selectedOption !== null && (
               <div className="pt-2 space-y-3 animate-fade-in">
-                <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
-                    <Zap className="w-3.5 h-3.5" />
+                <div 
+                  className="p-3.5 rounded-xl border space-y-1.5"
+                  style={{
+                    backgroundColor: 'var(--accent-soft-bg)',
+                    borderColor: 'var(--accent-color)',
+                  }}
+                >
+                  <div 
+                    className="flex items-center gap-1.5 text-xs font-bold"
+                    style={{ color: 'var(--accent-color)' }}
+                  >
+                    <Zap className="w-3.5 h-3.5 fill-current" />
                     <span>Trigger Hook: {currentQ.keywordHook}</span>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                     {currentQ.explanation || currentQ.coreConcept}
                   </p>
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
-                  <span className="text-[11px] text-slate-400 hidden sm:inline">
-                    Tip: Press <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px]">Space</kbd> or <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-[10px]">Enter</kbd> to proceed
+                  <span className="text-[11px] hidden sm:inline" style={{ color: 'var(--text-muted)' }}>
+                    Tip: Press <kbd className="px-1.5 py-0.5 rounded border font-mono text-[10px]" style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}>Space</kbd> to proceed
                   </span>
                   <button
                     onClick={handleNext}
-                    className="ml-auto flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors shadow-sm"
+                    className="ml-auto flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white transition-all shadow-xs cursor-pointer"
+                    style={{ backgroundColor: 'var(--accent-color)' }}
                   >
                     <span>{currentIndex + 1 < drillQuestions.length ? 'Next Question' : 'View Results'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
