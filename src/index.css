@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+:root {
+  /* Default: Warm Paper Mode (Kindle / Notion E-Ink Aesthetic) */
+  --app-bg: #FBF9F5;
+  --card-bg: #F4F1EA;
+  --hover-bg: #EBE6DC;
+  --border-color: #E5E0D5;
+  --text-primary: #1C1917;
+  --text-secondary: #44403C;
+  --text-muted: #78716C;
+  --accent-color: #0D9488;
+  --accent-soft-bg: #CCFBF1;
+  --accent-hover: #0F766E;
+
+  --correct-bg: #ECFDF5;
+  --correct-border: #10B981;
+  --correct-text: #065F46;
+  --correct-badge-bg: #D1FAE5;
+
+  --incorrect-bg: #FFF1F2;
+  --incorrect-border: #F43F5E;
+  --incorrect-text: #9F1239;
+  --incorrect-badge-bg: #FFE4E6;
+
+  --bookmark-color: #D97706;
+  --bookmark-bg: #FEF3C7;
+
+  /* Font size scale */
+  --font-scale: 1;
+}
+
+/* Warm Paper Mode Explicit */
+.theme-warm {
+  --app-bg: #FBF9F5;
+  --card-bg: #F4F1EA;
+  --hover-bg: #EBE6DC;
+  --border-color: #E5E0D5;
+  --text-primary: #1C1917;
+  --text-secondary: #44403C;
+  --text-muted: #78716C;
+  --accent-color: #0D9488;
+  --accent-soft-bg: #CCFBF1;
+  --accent-hover: #0F766E;
+
+  --correct-bg: #ECFDF5;
+  --correct-border: #10B981;
+  --correct-text: #065F46;
+  --correct-badge-bg: #D1FAE5;
+
+  --incorrect-bg: #FFF1F2;
+  --incorrect-border: #F43F5E;
+  --incorrect-text: #9F1239;
+  --incorrect-badge-bg: #FFE4E6;
+
+  --bookmark-color: #D97706;
+  --bookmark-bg: #FEF3C7;
+}
+
+/* Daylight Slate Mode (High-Focus Testing Aesthetic) */
+.theme-daylight {
+  --app-bg: #F8FAFC;
+  --card-bg: #FFFFFF;
+  --hover-bg: #F1F5F9;
+  --border-color: #E2E8F0;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --accent-color: #2563EB;
+  --accent-soft-bg: #DBEAFE;
+  --accent-hover: #1D4ED8;
+
+  --correct-bg: #ECFDF5;
+  --correct-border: #10B981;
+  --correct-text: #065F46;
+  --correct-badge-bg: #D1FAE5;
+
+  --incorrect-bg: #FFF1F2;
+  --incorrect-border: #F43F5E;
+  --incorrect-text: #9F1239;
+  --incorrect-badge-bg: #FFE4E6;
+
+  --bookmark-color: #D97706;
+  --bookmark-bg: #FEF3C7;
+}
+
+/* Midnight Dark Mode (Low-Glare Night Study) */
+.theme-midnight {
+  --app-bg: #0B1120;
+  --card-bg: #151F32;
+  --hover-bg: #1E293B;
+  --border-color: #26354D;
+  --text-primary: #E2E8F0;
+  --text-secondary: #CBD5E1;
+  --text-muted: #64748B;
+  --accent-color: #38BDF8;
+  --accent-soft-bg: rgba(56, 189, 248, 0.15);
+  --accent-hover: #0284C7;
+
+  --correct-bg: rgba(16, 185, 129, 0.14);
+  --correct-border: #059669;
+  --correct-text: #6EE7B7;
+  --correct-badge-bg: rgba(16, 185, 129, 0.25);
+
+  --incorrect-bg: rgba(244, 63, 94, 0.14);
+  --incorrect-border: #E11D48;
+  --incorrect-text: #FDA4AF;
+  --incorrect-badge-bg: rgba(244, 63, 94, 0.25);
+
+  --bookmark-color: #FBBF24;
+  --bookmark-bg: rgba(251, 191, 36, 0.18);
+}
+
+/* Font Size Scales */
+.font-scale-sm {
+  font-size: 14px;
+}
+.font-scale-md {
+  font-size: 16px;
+}
+.font-scale-lg {
+  font-size: 18px;
+}
+
+@layer base {
+  body {
+    background-color: var(--app-bg);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+}
+
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(3px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
+
+/* Minimalist ergonomic scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

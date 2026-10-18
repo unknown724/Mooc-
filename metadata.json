@@ -1,0 +1,6 @@
+{
+  "name": "GeoPrep MOOC - Conservation Geography",
+  "description": "Interactive MOOC exam preparation app for Conservation Geography featuring 12 weekly assignments, Gemini multimodal PDF parsing, study reader, exam simulation, and mistake bank.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
