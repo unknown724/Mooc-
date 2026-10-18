@@ -7,6 +7,14 @@ export interface OptionItem {
 
 export type QuestionOption = OptionItem;
 
+export type ConceptCluster =
+  | 'Protected Areas & IUCN'
+  | 'Remote Sensing & GIS'
+  | 'Geomorphology & Hydrology'
+  | 'Biogeography & Island Theory'
+  | 'Biodiversity Metrics & Ecology'
+  | 'Conservation Policy & Red List';
+
 export interface QuestionItem {
   id: string; // e.g. "w3-q1"
   week?: number; // 1 to 12
@@ -17,9 +25,18 @@ export interface QuestionItem {
   correctOption: OptionLabel;
   explanation: string;
   topicTag: string; // e.g., "Lithosphere & Rocks", "Weathering", "Mineralogy", "Geomorphology"
+  clusterTag?: ConceptCluster;
+  keywordHook?: string;
+  coreConcept?: string;
+  masteryCount?: number;
 }
 
 export type Question = QuestionItem;
+export type EnhancedQuestion = QuestionItem & {
+  clusterTag: ConceptCluster;
+  keywordHook: string;
+  coreConcept: string;
+};
 
 export interface UserQuestionStats {
   attempts: number;
@@ -90,7 +107,7 @@ export interface QuizResult {
   answers: Record<string, QuizAnswerRecord>;
 }
 
-export type AppView = 'dashboard' | 'reader' | 'flashcards' | 'quiz' | 'mistakes';
+export type AppView = 'dashboard' | 'reader' | 'flashcards' | 'quiz' | 'mistakes' | 'cheatsheet';
 
 export type FlashcardConfidence = 'again' | 'hard' | 'good' | 'easy';
 

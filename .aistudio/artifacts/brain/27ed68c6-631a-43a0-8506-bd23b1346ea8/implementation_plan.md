@@ -1,168 +1,155 @@
-# Editorial Redesign & Advanced Quiz Suite (GeoPrep MOOC)
+# High-Yield Memorization & Comprehension Master Plan (120 Conservation Geography MCQs)
 
-An elevated, Notion-style clean editorial overhaul of the Conservation Geography study platform. This redesign replaces the generic card layout with refined typographic hierarchy, tactile micro-interactions, an interactive 3D flashcard flip mode, one-click test selection with full randomization, and spaced-repetition weak area drills.
+A comprehensive cognitive retention strategy and interactive feature upgrade that replaces passive, exhausting reading of 120 questions with rapid concept clustering, keyword trigger mapping, an interactive High-Yield Cheat Sheet, and self-paced 5-minute Quick Drills.
 
 ---
 
 ## User Review & Critical Decisions
 
 > [!IMPORTANT]
-> The following directions were confirmed from your feedback and are locked into the blueprint:
+> Based on your selections, the study system is tailored specifically around **Self-Paced Mastery**, **Concept Clustering & Keyword Triggers**, and **Dedicated Interactive Tools (Cheat Sheet & Quick Drill)**.
 
-- **Confirmed Aesthetic**: Modern Notion-style clean editorial with deep graphite/slate dark mode, warm subtle zinc surfaces, razor-sharp hairline borders (`border-white/[0.08]`), unboxed metadata with typographic dot separators (`·`), and distraction-free reading typography (`Plus Jakarta Sans` / `DM Sans`).
-- **Confirmed Quiz Configuration**: One-click **"Select All 12 Weeks (120 Questions)"** master toggle, accompanied by independent instant toggles for **Question Randomizer (Shuffle)** and **Option Randomizer (A/B/C/D)**.
-- **Confirmed Study Additions**:
-  1. **Interactive 3D Flip Flashcard Mode**: Dedicated active-recall view with smooth card flip animations, confidence self-ratings ("Easy", "Good", "Hard"), and keyboard shortcuts (`Space` to flip, `1-3` to rate).
-  2. **Spaced-Repetition Smart Drills**: Adaptive queue prioritizing questions with multiple previous errors and recent misses.
-
----
-
-## 1. Overview & Core Concept
-
-### What It Does
-Transforms the application into a dual-engine academic workspace:
-1. **Editorial Study Reader & Flashcard Hub**: High-legibility, distraction-free reading with collapsible explanations, instant term search, and an interactive 3D flip-card flashcard system for rapid memorization.
-2. **Pro Quiz & Simulation Engine**: Flexible exam runner offering single-week drills, multi-module blends, or the complete 120-question course exam with randomized question and option sequencing, instant answer feedback, and spaced-repetition review.
-
-### Target Audience & Persona
-Students, researchers, and MOOC candidates preparing for Conservation Geography assignments and competitive certification exams who need rapid revision, active recall, and mistake remediation on both mobile phones and desktop displays.
-
-### Key Value Delivered
-- **Zero Clutter**: Eliminates heavy nested containers, oversized pill badges, and repetitive borders.
-- **One-Touch Versatility**: Switch between reading 120 solutions, flipping active-recall flashcards, or taking a fully randomized 120-question mock exam in a single tap.
-- **Mobile Ergonomics**: 44px+ touch targets, sticky thumb-zone navigation, and a bottom sheet layout that never exceeds 15% viewport height.
+- **Confirmed Timeline & Cadence**: Self-paced mastery whenever free time allows — structured into bite-sized 3 to 5-minute sessions rather than rigid multi-hour study blocks.
+- **Confirmed Memorization Engine**: Concept clustering (grouping related questions across all 12 weeks into thematic families) combined with 2-word **Keyword Triggers** that instantly cue the correct option.
+- **Confirmed Interactive Additions**:
+  1. **High-Yield Cheat Sheet View**: A hyper-dense, searchable cheat matrix mapping each question stem directly to its core concept, keyword trigger, and deductive reasoning.
+  2. **Quick Drill Mode (Blitz Sessions)**: 1-click launch of 5-question or 10-question micro-drills pulled from unmastered concepts or weak clusters.
 
 ---
 
-## 2. User Experience & Visual Design
+## 1. Overview & Cognitive Learning Architecture
 
-### Visual Identity & Theme
-- **Aesthetic Direction**: Notion/Linear-inspired minimalist academic workspace. Clean surfaces, high-contrast crisp text, subtle micro-borders, and tactile interaction states.
-- **Color Palette**:
-  - *Dominant Canvas (60%)*: Deep slate-graphite (`#090D16` / `bg-slate-950`).
-  - *Structural Surfaces (30%)*: Muted zinc/slate cards (`#111827` / `#161F30`), hairline dividers (`border-slate-800/80` or `border-white/[0.07]`), and unboxed metadata.
-  - *Semantic Accents (10%)*: Emerald green (`#10B981`) for correct answers and mastery indicators; Rose red (`#F43F5E`) for mistakes; Warm amber (`#F59E0B`) for bookmarks and review flags.
-- **Typography & Hierarchy**:
-  - *Headlines & Display*: Refined `Plus Jakarta Sans`, 600 weight, balanced line wrapping.
-  - *Body Prose & Question Prompts*: Clean 15px–16px text with generous 1.6 line height for effortless long-session reading.
-  - *Metadata & Keys*: Clean unboxed text (`Week 3 · Question 7 · Geomorphology`) with no static pill capsules.
-  - *Numerals & Timers*: Monospace tabular figures (`tabular-nums font-mono`).
+### The Problem With Passive Reading
+Reading 120 multiple-choice questions sequentially causes "illusions of competence"—your brain recognizes familiar phrases while reading, but fails to retrieve them under examination pressure. Furthermore, questions in Week 1 often relate closely to Week 7 or Week 10, but chronological reading fragments these conceptual connections.
 
-### Key Views & Component Upgrades
+### The 3-Step Cognitive Memorization Method
 
-#### Top Navigation (3-Zone Strict Contract)
-- **Zone 1 (Brand)**: Clean typographic wordmark `GeoPrep MOOC` with subtle course label `Conservation Geography`.
-- **Zone 2 (Mode Switcher)**: Segmented pill-less tab strip: **Reader**, **Flashcards**, **Quiz Engine**, **Mistake Bank**, **Dashboard**.
-- **Zone 3 (Actions)**: Minimalist `Upload PDFs` button + data sync icon.
-
-#### View A: Notion-Style Study Reader
-- Distraction-free single or multi-week scrollable paper feed.
-- **Header Toolbar**:
-  - One-click week selector dropdown (Weeks 1–12 or All Combined).
-  - Search input with instantaneous highlight matching.
-  - Smooth **Self-Test Mode Switch**: Blurs answers until tapped or hovered.
-  - View switch: Toggle between **Scrollable Reader** and **Interactive Flashcards**.
-- **Question Item Anatomy**:
-  - Unboxed top header: `W03 · Q04 · Weathering` + Bookmark toggle.
-  - Large, comfortable question text.
-  - 4 clean options rendered with subtle hover states and clear letter indices (`A`, `B`, `C`, `D`).
-  - Educational explanation callout with emerald key notation and clear physical science rationale.
-
-#### View B: Interactive 3D Flashcard Mode (New)
-- Centered tactile flashcard with smooth flip animation on click or `Spacebar`.
-- **Front Side**: Week number, topic tag, question text, and 4 multiple-choice options.
-- **Back Side**: Verified correct answer highlighted in emerald, complete detailed explanation, and concept breakdown.
-- **Confidence Rating Actions**: Three quick buttons at the bottom:
-  - `[1] Hard (Review soon)` (Amber)
-  - `[2] Good (Repeat in session)` (Teal)
-  - `[3] Easy (Mastered)` (Emerald)
-- Progress indicator: `Card 14 of 120` with keyboard indicator hint.
-
-#### View C: Redesigned Quiz Engine with Quick Select All & Randomizers
-- **Pre-Quiz Configuration Sheet**:
-  - **Quick Presets**:
-    - `All 120 Questions (Complete Course Exam)` (1-Click button)
-    - `Week 1-6 Midterm Sprint`
-    - `Week 7-12 Finals Sprint`
-    - `Weak Areas & Mistakes Drill`
-  - **Week Selection Matrix**: Compact 12-week grid with a prominent **"Select All" / "Deselect All"** toggle.
-  - **Randomization Panel**:
-    - Toggle: `Shuffle Questions Order` (Randomize Q1-Q120)
-    - Toggle: `Shuffle Options Order` (Randomize A/B/C/D choices)
-  - **Mode Selection**: `Instant Feedback Practice` vs `Timed Exam (Simulated Test)`.
-- **Active Quiz Interface**:
-  - Compact header with progress bar, timer (`tabular-nums`), and question counter.
-  - Question Navigator bar with numbered indicators showing answered, correct, wrong, and bookmarked questions.
-  - Options with physical keycap shortcuts (`[A]`, `[B]`, `[C]`, `[D]` or `1`, `2`, `3`, `4`).
-  - In Instant Feedback mode: dynamic emerald/rose highlight with instant explanation card animation.
-
-#### View D: Spaced-Repetition Mistake Bank
-- Tracks mistake frequency (`Failed 2x`, `Failed 1x`) and last attempt timestamp.
-- **"Launch Spaced Drill"**: Automatically compiles all missed items and prioritizes the most frequently missed questions first.
-- Filter by week and search by concept.
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    THE 3-STEP MEMORIZATION PROTOCOL                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  STEP 1: THEMATIC CLUSTERING (Group the 120 Questions into 6 Core Domains)  │
+│  - Cluster 1: Protected Areas, IUCN Categories & Wildlife Sanctuaries       │
+│  - Cluster 2: Remote Sensing, GIS Indices (NDVI, EVI) & Spatial Analytics   │
+│  - Cluster 3: Geomorphology, Soil Conservation & Watershed Hydrology        │
+│  - Cluster 4: Island Biogeography, Metapopulations & Species Area Curves    │
+│  - Cluster 5: Biodiversity Metrics (Alpha/Beta/Gamma, Shannon, Simpson)     │
+│  - Cluster 6: Conservation Policy, Conventions (CITES, CBD) & Red List      │
+│                                                                             │
+│                                  │                                          │
+│                                  ▼                                          │
+│  STEP 2: KEYWORD-TRIGGER ASSOCIATIONS (Bypass Option Reading)               │
+│  - Pair each question prompt with a distinct 2-3 word "Keyword Hook"        │
+│  - Example: "Meander cutoff" ────► Trigger: "Oxbow Lake"                    │
+│  - Example: "Category II" ───────► Trigger: "National Park"                 │
+│  - Example: "Near-IR minus Red" ─► Trigger: "NDVI Vegetation Index"         │
+│                                                                             │
+│                                  │                                          │
+│                                  ▼                                          │
+│  STEP 3: 5-MINUTE ACTIVE RECALL BLITZES (Quick Drill Mode)                  │
+│  - Test in rapid bursts of 5 or 10 questions                                │
+│  - Automatic repetition of questions answered with hesitation or errors     │
+│  - "Mastered" status unlocked only after 2 consecutive correct recalls      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 3. Key Product Decisions & Trade-Offs
+## 2. Interactive Feature Enhancements
 
-### Decision 1: Notion-Style Minimalist Cards vs. Heavy Bordered Boxes
-- **Chosen Approach**: Remove the chunky border boxes, nested chips, and bright backgrounds. Use quiet hairline borders (`border-white/[0.08]`), unboxed metadata, and generous whitespace.
-- **Why**: Reduces cognitive fatigue during multi-hour revision sessions and makes the UI feel native, premium, and calm.
+### View 1: High-Yield Cheat Sheet (Interactive Concept Matrix)
+A new top-level tab complementing the Study Reader and Flashcards:
+- **Search & Quick-Filter**: Instant live search by keyword, week, or concept cluster.
+- **Compact Matrix Layout**:
+  - `Domain Cluster` (e.g., *Biogeography · Island Theory*)
+  - `Keyword Trigger` (Bolded visual hook: e.g., *Distance Effect $\rightarrow$ Colonization Rate*)
+  - `Core Concept Summary` (1-line crisp explanation in plain language)
+  - `Verified MCQ Answer` (Clear target key)
+  - `Direct Practice Link` (Instant click to jump into a single-question test)
+- **One-Click Print / PDF Export**: Clean, high-contrast monochrome layout optimized for offline review or emergency exam morning revision.
 
-### Decision 2: 1-Click "Select All" with Pre-set Bundles
-- **Chosen Approach**: Add dedicated 1-click buttons: "Select All 12 Weeks (120 Questions)" and "Select All Unlocked", plus instant switches for question and option shuffling.
-- **Why**: Eliminates tedious manual clicking of 12 separate checkboxes when preparing for a full mock exam.
+### View 2: Quick Drill Mode (3-Minute Blitz Sessions)
+An instant launcher built directly into the Top Bar and Dashboard:
+- **Zero Configuration Friction**: Single-tap buttons:
+  - `5-Question Quick Blitz` (Estimated time: 2 minutes)
+  - `10-Question Concept Drill` (Estimated time: 4 minutes)
+  - `Weak Clusters Only` (Prioritizes questions with 0% or 50% historical accuracy)
+- **Instant Keyword Highlighting**: The question stem automatically highlights the recognized keyword hook to train the student's visual pattern recognition.
+- **Immediate Rationale Drawer**: Instant feedback card with physical science explanation without having to wait for the end of the test.
 
-### Decision 3: Adding 3D Flip Flashcards as a First-Class View
-- **Chosen Approach**: Provide a dedicated Flashcard view directly accessible from the main navigation and inside the Study Reader.
-- **Why**: Active recall via flashcard flipping is scientifically proven to outperform passive re-reading for MCQ retention.
+### View 3: Concept Cluster Breakdown
+In the Study Reader and Flashcard modes:
+- Add a **"View by Concept Cluster"** toggle alongside the existing "View by Week" selector.
+- Allows studying all 18 Island Biogeography or 15 Remote Sensing questions together regardless of which assignment week they appeared in.
 
 ---
 
-## 4. Technical Architecture & Component Hierarchy
+## 3. Technical Architecture & Component Hierarchy
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                             GeoPrep MOOC App                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│  Top Navigation (Brand · Mode Switcher · Upload Modal · Data Backup)        │
-└──────┬──────────────────────┬────────────────────────┬──────────────────────┘
-       │                      │                        │
-       ▼                      ▼                        ▼
-┌──────────────┐      ┌───────────────┐        ┌───────────────┐
-│ Study Reader │      │ Flashcard Hub │        │  Quiz Engine  │
-│  & Revision  │      │  (3D Flip)    │        │  (All / Rand) │
-└──────┬───────┘      └───────┬───────┘        └───────┬───────┘
-       │                      │                        │
-       ▼                      ▼                        ▼
-┌──────────────────────────────────────────────────────────────┐
-│       Shared State & Persistence (localStorage Engine)       │
-│  - 12 Weeks (120 MCQs with verified keys & rationales)       │
-│  - Spaced Repetition Queue & Mistake Error Counts            │
-│  - Bookmarks & Quiz Performance History                      │
-└──────────────────────────────────────────────────────────────┘
+│  Top Navigation (Brand · Mode Switcher · Quick Blitz Launch · Theme Toggle) │
+└──────┬──────────────────┬──────────────────┬─────────────────┬──────────────┘
+       │                  │                  │                 │
+       ▼                  ▼                  ▼                 ▼
+┌──────────────┐   ┌──────────────┐   ┌──────────────┐   ┌────────────────┐
+│ Study Reader │   │  High-Yield  │   │ Quick Drill  │   │ Flashcards 3D  │
+│ (By Cluster) │   │  Cheat Sheet │   │ (5-Q Blitz)  │   │  (Flip Recall) │
+└──────┬───────┘   └──────┬───────┘   └──────┬───────┘   └──────┬─────────┘
+       │                  │                  │                  │
+       └──────────────────┴─────────┬────────┴──────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                   Concept Clustering & Mastery Storage                      │
+│  - 120 MCQs with assigned clusterTags and keywordHooks                      │
+│  - Mastery state: [unseen (0) | practicing (1) | mastered (2)]             │
+│  - Fast randomized slice generator for 5-Q / 10-Q Blitz modes                │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Component Breakdown
-1. **`Navbar.tsx`**: Streamlined 3-zone header with 5 clean modes (Dashboard, Reader, Flashcards, Quiz, Mistakes).
-2. **`StudyReaderView.tsx`**: Notion-style layout with unboxed metadata, instant search, and self-test blur toggle.
-3. **`FlashcardView.tsx` (New)**: Interactive 3D flip card component with smooth CSS transforms (`perspective: 1000px`, `transform-style: preserve-3d`), keyboard navigation (`Space`, `ArrowLeft`, `ArrowRight`), and confidence rating buttons.
-4. **`QuizEngineView.tsx`**: Upgraded with 1-click "Select All" toggle, question randomizer, option randomizer, and seamless mobile ergonomics.
-5. **`MistakeBankView.tsx`**: Spaced-repetition priority queue and mistake drill launcher.
-6. **`UploadPdfModal.tsx`**: Clean multimodal Gemini parser for custom assignment PDFs.
+### Data Schema Enhancement
+Enrich each of the 120 questions in `src/data/seedData.ts` with explicit cognitive tags:
+```typescript
+export interface EnhancedQuestion extends Question {
+  clusterTag: 'Protected Areas' | 'Remote Sensing & GIS' | 'Geomorphology' | 'Biogeography' | 'Biodiversity Metrics' | 'Policy & IUCN';
+  keywordHook: string; // e.g. "Meander Cutoff -> Oxbow Lake"
+  coreConcept: string; // e.g. "Crescent-shaped water bodies formed when a river bends and breaches its neck."
+  masteryCount: number; // consecutive correct answers
+}
+```
 
 ---
 
-## 5. Verification & Test Plan
+## 4. Key Product Decisions & Trade-Offs
 
-1. **Visual & Responsive Verification**:
-   - Verify on mobile viewport (375px–430px) to ensure no cramped header, proper thumb reach, and clean single-line controls.
-   - Verify desktop viewport (1440px) with comfortable reading margins.
-2. **Quiz & Randomizer Testing**:
-   - Verify clicking "Select All 120 Questions" instantly sets all 12 weeks.
-   - Verify Question Randomizer properly shuffles questions without dropping IDs.
-   - Verify Option Randomizer correctly remaps answer keys (`A`, `B`, `C`, `D`) so the true correct text is always validated accurately.
-3. **Flashcard Testing**:
-   - Verify spacebar flips card; left/right arrows advance cards; rating buttons update difficulty status.
-4. **Build & Lint**:
-   - Run `lint_applet` (`tsc --noEmit`) and `compile_applet` (`npm run build`) to ensure 0 errors.
+### Decision 1: Clustering Over Sequential Week Reading
+- **Chosen Approach**: Allow students to toggle between Week-based and Cluster-based organization.
+- **Why**: Cognitive science shows cross-contextual grouping builds deep conceptual schemas in long-term memory, whereas sequential reading promotes isolated rote memorization.
+
+### Decision 2: 5-Question Micro-Drills Over Full 120-Question Tests
+- **Chosen Approach**: Feature a 1-tap 5-question Blitz mode on the dashboard.
+- **Why**: Self-paced learners who study during sporadic free time (e.g., commute, coffee break) are far more likely to complete 3 separate 5-question sessions than sit down for a 120-question, 60-minute mock exam.
+
+### Decision 3: Keyword Hooking
+- **Chosen Approach**: Explicitly display the "Keyword Hook" on cards and cheat sheets.
+- **Why**: In NPTEL competitive exams, speed and recognition accuracy are critical; training the brain to lock onto the diagnostic trigger phrase saves time and eliminates hesitation between plausible distractors.
+
+---
+
+## 5. Step-by-Step Implementation & Verification Plan
+
+1. **Step 1: Cognitive Tagging & Clustering (Data Layer)**
+   - Audit and classify all 120 verified questions into 6 high-yield clusters with concise `keywordHook` and `coreConcept` summaries in `seedData.ts`.
+2. **Step 2: High-Yield Cheat Sheet Component (`CheatSheetView.tsx`)**
+   - Build a searchable, responsive matrix with filtering by cluster, search-as-you-type, and printable formatting.
+3. **Step 3: Quick Drill Blitz Mode (`QuickDrillModal.tsx`)**
+   - Build a lightweight, high-energy 5-question micro-drill modal accessible from anywhere with rapid feedback and mastery tracking.
+4. **Step 4: Cluster Mode in Study Reader & Flashcards**
+   - Integrate the cluster selector alongside the week selector so learners can switch perspectives effortlessly.
+5. **Step 5: Testing & Build Verification**
+   - Run `lint_applet` and `compile_applet` to ensure seamless TypeScript typing and zero bundle regressions.

@@ -20,7 +20,8 @@ import {
   Check, 
   ChevronRight, 
   Shuffle, 
-  Layers 
+  Layers,
+  Zap
 } from 'lucide-react';
 
 interface DashboardViewProps {
@@ -34,6 +35,7 @@ interface DashboardViewProps {
   onQuickLoadAll: () => void;
   onOpenUploadModal: () => void;
   onNavigateView: (view: AppView) => void;
+  onOpenQuickDrill?: () => void;
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
@@ -44,6 +46,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   onStartQuizWithConfig,
   onOpenReaderForWeek,
   onNavigateView,
+  onOpenQuickDrill,
 }) => {
   // Default to selecting all 12 weeks
   const [selectedWeeks, setSelectedWeeks] = useState<number[]>(
@@ -165,6 +168,29 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-3 shrink-0">
+          {onOpenQuickDrill && (
+            <button
+              onClick={onOpenQuickDrill}
+              className="px-4 py-2.5 rounded-xl text-white font-bold text-xs shadow-xs transition-all active:scale-95 flex items-center gap-2 cursor-pointer bg-emerald-600 hover:bg-emerald-500"
+            >
+              <Zap className="w-4 h-4 fill-current" />
+              <span>5-Q Quick Blitz</span>
+            </button>
+          )}
+
+          <button
+            onClick={() => onNavigateView('cheatsheet')}
+            className="px-4 py-2.5 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-2 cursor-pointer shadow-xs hover:opacity-90"
+            style={{
+              backgroundColor: 'var(--app-bg)',
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-primary)',
+            }}
+          >
+            <Zap className="w-4 h-4 text-emerald-400" />
+            <span>High-Yield Cheat Sheet</span>
+          </button>
+
           <button
             onClick={handleLaunchFullMockExam}
             className="px-5 py-2.5 rounded-xl text-white font-bold text-xs shadow-xs transition-all active:scale-95 flex items-center gap-2 cursor-pointer"

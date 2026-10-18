@@ -8,8 +8,10 @@ import {
   Bookmark, 
   BookmarkCheck, 
   CheckCircle2, 
-  Sparkles
+  Sparkles,
+  Zap
 } from 'lucide-react';
+import { enhanceQuestion } from '../data/conceptClusters';
 
 interface FlashcardViewProps {
   questions: QuestionItem[];
@@ -139,6 +141,7 @@ export const FlashcardView: React.FC<FlashcardViewProps> = ({
 
   const isBookmarked = bookmarks.includes(currentQ.id);
   const currentConfidence = confidenceRatings[currentQ.id];
+  const enhanced = currentQ ? enhanceQuestion(currentQ) : null;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 pb-24 md:pb-8 animate-fade-in">
@@ -198,9 +201,17 @@ export const FlashcardView: React.FC<FlashcardViewProps> = ({
 
       {/* Progress & Rating State */}
       <div className="flex items-center justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
-        <span className="font-mono tabular-nums font-semibold">
-          Card {currentIndex + 1} of {totalCards}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="font-mono tabular-nums font-semibold" style={{ color: 'var(--text-primary)' }}>
+            Card {currentIndex + 1} of {totalCards}
+          </span>
+          {enhanced?.clusterTag && (
+            <>
+              <span>·</span>
+              <span className="text-emerald-400 font-medium">{enhanced.clusterTag}</span>
+            </>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           {currentConfidence && (
             <span 
@@ -347,8 +358,22 @@ export const FlashcardView: React.FC<FlashcardViewProps> = ({
                 </div>
               </div>
 
+              {enhanced?.keywordHook && (
+                <div 
+                  className="mt-3 p-3 rounded-xl border flex items-center gap-2 text-xs font-semibold"
+                  style={{
+                    backgroundColor: 'var(--hover-bg)',
+                    borderColor: 'var(--accent-color)',
+                    color: 'var(--accent-color)',
+                  }}
+                >
+                  <Zap className="w-4 h-4 shrink-0 fill-current" />
+                  <span>Memory Hook: {enhanced.keywordHook}</span>
+                </div>
+              )}
+
               <div 
-                className="mt-4 p-4 rounded-xl border text-sm leading-relaxed"
+                className="mt-3 p-4 rounded-xl border text-sm leading-relaxed"
                 style={{
                   backgroundColor: 'var(--app-bg)',
                   borderColor: 'var(--border-color)',

@@ -42,6 +42,9 @@ import { FlashcardView } from './components/FlashcardView';
 import { QuizEngineView } from './components/QuizEngineView';
 import { MistakeBankView } from './components/MistakeBankView';
 import { UploadPdfModal } from './components/UploadPdfModal';
+import { CheatSheetView } from './components/CheatSheetView';
+import { QuickDrillModal } from './components/QuickDrillModal';
+import { ConceptCluster } from './types/quiz';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<AppView>('dashboard');
@@ -84,6 +87,33 @@ export default function App() {
   
   // Upload modal state
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  
+  // Quick drill blitz modal state
+  const [isQuickDrillOpen, setIsQuickDrillOpen] = useState(false);
+  const [quickDrillCluster, setQuickDrillCluster] = useState<ConceptCluster | undefined>(undefined);
+
+  const handleRecordQuickDrillMistake = useCallback((question: QuestionItem, selectedOption: string) => {
+    const questionId = question.id;
+    setMistakes((prev) => {
+      const existing = prev[questionId];
+      return {
+        ...prev,
+        [questionId]: {
+          questionId,
+          weekNumber: question.week ?? question.weekNumber,
+          questionNumber: question.number,
+          questionText: question.questionText,
+          options: question.options,
+          selectedOption: selectedOption as any,
+          correctOption: question.correctOption,
+          explanation: question.explanation,
+          topicTag: question.topicTag,
+          timestamp: new Date().toISOString(),
+          errorCount: existing ? existing.errorCount + 1 : 1,
+        },
+      };
+    });
+  }, []);
 
   // Sync state to storage
   useEffect(() => {
@@ -387,6 +417,10 @@ export default function App() {
         onExportData={handleExportData}
         onImportData={handleImportData}
         onQuickLoadAll={handleQuickLoadAll}
+        onOpenQuickDrill={() => {
+          setQuickDrillCluster(undefined);
+          setIsQuickDrillOpen(true);
+        }}
       />
 
       {/* Main Content Area */}
@@ -403,6 +437,20 @@ export default function App() {
             onQuickLoadAll={handleQuickLoadAll}
             onOpenUploadModal={() => setIsUploadModalOpen(true)}
             onNavigateView={setCurrentView}
+            onOpenQuickDrill={() => {
+              setQuickDrillCluster(undefined);
+              setIsQuickDrillOpen(true);
+            }}
+          />
+        )}
+
+        {currentView === 'cheatsheet' && (
+          <CheatSheetView
+            weeks={weeks}
+            onLaunchQuickDrill={(cluster) => {
+              setQuickDrillCluster(cluster);
+              setIsQuickDrillOpen(true);
+            }}
           />
         )}
 
@@ -464,6 +512,15 @@ export default function App() {
         onWeeksUpdated={setWeeks}
         currentWeeks={weeks}
         onQuickLoadAll={handleQuickLoadAll}
+      />
+
+      {/* Quick Drill Blitz Modal */}
+      <QuickDrillModal
+        isOpen={isQuickDrillOpen}
+        onClose={() => setIsQuickDrillOpen(false)}
+        weeks={weeks}
+        initialCluster={quickDrillCluster}
+        onSaveMistake={handleRecordQuickDrillMistake}
       />
 
       {/* Ergonomic Footer */}

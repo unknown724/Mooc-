@@ -13,7 +13,8 @@ import {
   Sun,
   Moon,
   Coffee,
-  Type
+  Type,
+  Zap
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -32,6 +33,7 @@ interface NavbarProps {
   onExportData: () => void;
   onImportData: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onQuickLoadAll: () => void;
+  onOpenQuickDrill?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -49,13 +51,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   onExportData,
   onImportData,
   onQuickLoadAll,
+  onOpenQuickDrill,
 }) => {
   const [showDataMenu, setShowDataMenu] = useState(false);
 
   const navItems: { id: AppView; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
+    { id: 'cheatsheet', label: 'Cheat Sheet', icon: <Zap className="w-4 h-4 text-emerald-400" /> },
     { id: 'reader', label: 'Study Reader', icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'quiz', label: 'Exam Quiz (120 Qs)', icon: <GraduationCap className="w-4 h-4" /> },
+    { id: 'quiz', label: 'Exam Quiz', icon: <GraduationCap className="w-4 h-4" /> },
     { id: 'flashcards', label: 'Flashcards', icon: <Layers className="w-4 h-4" /> },
     { 
       id: 'mistakes', 
@@ -276,6 +280,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </div>
 
+              {/* Quick Drill Blitz Button */}
+              {onOpenQuickDrill && (
+                <button
+                  onClick={onOpenQuickDrill}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white text-xs font-semibold shadow-xs transition-all cursor-pointer active:scale-95 bg-emerald-600 hover:bg-emerald-500"
+                  title="5-Question Rapid Recall Blitz"
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Quick Drill</span>
+                </button>
+              )}
+
               {/* Upload PDFs Button */}
               <button
                 onClick={onOpenUploadModal}
@@ -371,7 +387,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Fixed Bottom Navigation Bar */}
       <nav 
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t grid grid-cols-5 items-center h-16 px-1 safe-bottom backdrop-blur-xl"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t grid grid-cols-6 items-center h-16 px-1 safe-bottom backdrop-blur-xl"
         style={{
           backgroundColor: 'var(--card-bg)',
           borderColor: 'var(--border-color)',
@@ -383,7 +399,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               key={item.id}
               onClick={() => onSelectView(item.id)}
-              className={`flex flex-col items-center justify-center h-full min-h-[44px] gap-1 transition-colors relative cursor-pointer ${
+              className={`flex flex-col items-center justify-center h-full min-h-[44px] gap-0.5 transition-colors relative cursor-pointer ${
                 isActive ? 'font-bold' : 'opacity-70 hover:opacity-100'
               }`}
               style={{
@@ -399,8 +415,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                   />
                 )}
               </div>
-              <span className="text-[10px] tracking-tight whitespace-nowrap">
-                {item.id === 'quiz' ? 'Quiz' : item.label}
+              <span className="text-[9px] tracking-tight whitespace-nowrap">
+                {item.id === 'cheatsheet' ? 'Cheat' : item.id === 'quiz' ? 'Quiz' : item.label.split(' ')[0]}
               </span>
             </button>
           );

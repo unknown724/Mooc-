@@ -18,8 +18,10 @@ import {
   Edit3, 
   Save, 
   Sliders,
-  ArrowLeft
+  ArrowLeft,
+  Zap
 } from 'lucide-react';
+import { enhanceQuestion } from '../data/conceptClusters';
 
 interface StudyReaderViewProps {
   weeks: Record<number, WeekAssignment>;
@@ -553,6 +555,8 @@ export const StudyReaderView: React.FC<StudyReaderViewProps> = ({
               ? !isIndividuallyToggled 
               : isIndividuallyToggled;
 
+            const enhanced = enhanceQuestion(q);
+
             return (
               <article
                 key={q.id}
@@ -575,6 +579,8 @@ export const StudyReaderView: React.FC<StudyReaderViewProps> = ({
                     <span className="font-mono tabular-nums font-semibold">Q{q.number}</span>
                     <span>·</span>
                     <span style={{ color: 'var(--text-secondary)' }}>{q.topicTag}</span>
+                    <span>·</span>
+                    <span className="hidden sm:inline text-emerald-400/80">{enhanced.clusterTag}</span>
                   </div>
 
                   <div className="flex items-center gap-1.5">
@@ -607,6 +613,14 @@ export const StudyReaderView: React.FC<StudyReaderViewProps> = ({
                     </button>
                   </div>
                 </div>
+
+                {/* Cognitive Trigger Hook */}
+                {enhanced.keywordHook && (
+                  <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium bg-emerald-950/25 px-2.5 py-1 rounded-lg border border-emerald-500/20 w-fit">
+                    <Zap className="w-3 h-3 text-emerald-400 shrink-0" />
+                    <span>Memory Trigger: <strong>{enhanced.keywordHook}</strong></span>
+                  </div>
+                )}
 
                 {/* Question Stem: text-lg md:text-xl font-semibold leading-relaxed tracking-tight */}
                 <h3 
