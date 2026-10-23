@@ -163,7 +163,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             Academic Preparation & Quiz Suite
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            All 120 multiple choice questions across all 12 course assignments. Study with Kindle-style reading comfort, drill with 3D flashcards, or simulate a randomized examination.
+            All 120 multiple choice questions across all 12 course assignments. Study with eye-comfort reading, drill with the high-yield cheat sheet and 5-Q blitz, or simulate a randomized examination.
           </p>
         </div>
 
@@ -198,19 +198,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           >
             <Play className="w-4 h-4 fill-current" />
             <span>Take All 120 Questions (Randomized)</span>
-          </button>
-          
-          <button
-            onClick={() => onNavigateView('flashcards')}
-            className="px-4 py-2.5 rounded-xl border text-xs font-semibold transition-colors flex items-center gap-2 cursor-pointer shadow-xs hover:opacity-90"
-            style={{
-              backgroundColor: 'var(--app-bg)',
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-primary)',
-            }}
-          >
-            <Layers className="w-4 h-4" style={{ color: 'var(--accent-color)' }} />
-            <span>3D Flashcards</span>
           </button>
         </div>
       </div>
@@ -272,14 +259,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           style={{ backgroundColor: 'var(--card-bg)', borderColor: 'var(--border-color)' }}
         >
           <div className="flex items-center justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
-            <span className="font-medium">Mistake Bank</span>
-            <AlertTriangle className="w-4 h-4" style={{ color: 'var(--incorrect-border)' }} />
+            <span className="font-medium">Results & Mistakes</span>
+            <Award className="w-4 h-4" style={{ color: 'var(--accent-color)' }} />
           </div>
-          <div className="mt-2 text-2xl font-bold font-mono tabular-nums" style={{ color: 'var(--incorrect-text)' }}>
-            {mistakesCount}
+          <div className="mt-2 text-2xl font-bold font-mono tabular-nums" style={{ color: 'var(--text-primary)' }}>
+            {quizHistory.length} <span className="text-xs font-sans font-normal" style={{ color: 'var(--text-muted)' }}>saved ({mistakesCount} mistakes)</span>
           </div>
-          <div className="mt-1 flex items-center gap-1 text-[11px] font-semibold" style={{ color: 'var(--incorrect-text)' }}>
-            <span>Review weak concepts</span>
+          <div className="mt-1 flex items-center gap-1 text-[11px] font-semibold" style={{ color: 'var(--accent-color)' }}>
+            <span>View marks & review mistakes</span>
             <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>

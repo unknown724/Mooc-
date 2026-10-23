@@ -36,6 +36,7 @@ interface QuizEngineViewProps {
   onSaveQuizResult: (result: QuizResult, newMistakes: Record<string, UserMistake>) => void;
   onRetestMissed: (missedQuestions: QuestionItem[]) => void;
   onExitQuiz: () => void;
+  onViewResults?: () => void;
 }
 
 export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
@@ -46,6 +47,7 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
   onSaveQuizResult,
   onRetestMissed,
   onExitQuiz,
+  onViewResults,
 }) => {
   // Selected weeks: defaults to all 12 weeks or config
   const [selectedWeeks, setSelectedWeeks] = useState<number[]>(() => {
@@ -104,8 +106,15 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeQuestionsPool, randomSeed, shuffleQuestionsActive, shuffleOptionsActive]);
 
+  // Reset user answers when questions change (fixes scoring bug on re-shuffle)
+  useEffect(() => {
+    setUserAnswers({});
+    setCurrentIndex(0);
+    setIsCompleted(false);
+  }, [preparedQuestions]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<Record<string, OptionLabel>>({});
+  const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(
     examMode === 'timed' && config.timeLimitMinutes
@@ -117,6 +126,15 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
 
   const currentQ = preparedQuestions[currentIndex];
   const totalQuestions = preparedQuestions.length;
+
+  // Helper to accurately validate question status regardless of option shuffling
+  const checkAnswer = useCallback((q: QuestionItem, ansText: string | undefined) => {
+    if (!ansText) return { isAnswered: false, isCorrect: false, selectedLabel: null as OptionLabel | null };
+    const selectedOpt = q.options.find((o) => o.text === ansText);
+    const selectedLabel = selectedOpt ? selectedOpt.label : null;
+    const isCorrect = selectedLabel === q.correctOption;
+    return { isAnswered: true, isCorrect, selectedLabel };
+  }, []);
 
   const resetQuizProgress = () => {
     setCurrentIndex(0);
@@ -181,9 +199,11 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
       if (examMode === 'feedback' && userAnswers[currentQ.id]) {
         return; // locked after initial choice in feedback mode
       }
+      const opt = currentQ.options.find(o => o.label === label);
+      if (!opt) return;
       setUserAnswers((prev) => ({
         ...prev,
-        [currentQ.id]: label,
+        [currentQ.id]: opt.text,
       }));
     },
     [currentQ, examMode, userAnswers]
@@ -211,26 +231,38 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
     const newMistakes: Record<string, UserMistake> = {};
 
     preparedQuestions.forEach((q) => {
-      const selected = userAnswers[q.id] || null;
-      const isCorrect = selected === q.correctOption;
+      const selectedText = userAnswers[q.id] || null;
+      const selectedOption = q.options.find(o => o.text === selectedText);
+      const selectedLabel = selectedOption ? selectedOption.label : null;
+      const isCorrect = selectedLabel === q.correctOption;
       if (isCorrect) correctCount++;
+
+      const correctOpt = q.options.find(o => o.label === q.correctOption);
 
       answerRecords[q.id] = {
         questionId: q.id,
-        selectedOption: selected,
+        selectedOption: selectedLabel,
         correctOption: q.correctOption,
         isCorrect,
         timeSpentSeconds: 0,
+        questionText: q.questionText,
+        selectedText,
+        correctText: correctOpt?.text,
+        options: q.options,
+        explanation: q.explanation,
+        topicTag: q.topicTag,
+        weekNumber: q.week ?? q.weekNumber,
+        questionNumber: q.number,
       };
 
-      if (!isCorrect && selected !== null) {
+      if (!isCorrect && selectedText !== null) {
         newMistakes[q.id] = {
           questionId: q.id,
           weekNumber: q.week ?? q.weekNumber,
           questionNumber: q.number,
           questionText: q.questionText,
           options: q.options,
-          selectedOption: selected,
+          selectedOption: selectedLabel as any,
           correctOption: q.correctOption,
           explanation: q.explanation,
           topicTag: q.topicTag,
@@ -333,15 +365,16 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
 
   // --- RESULT VIEW ---
   if (isCompleted && !reviewMode) {
-    const correctCount = preparedQuestions.filter((q) => userAnswers[q.id] === q.correctOption).length;
+    const correctCount = preparedQuestions.filter((q) => checkAnswer(q, userAnswers[q.id]).isCorrect).length;
     const scorePct = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
-    const missedQuestions = preparedQuestions.filter(
-      (q) => userAnswers[q.id] && userAnswers[q.id] !== q.correctOption
-    );
+    const missedQuestions = preparedQuestions.filter((q) => {
+      const status = checkAnswer(q, userAnswers[q.id]);
+      return status.isAnswered && !status.isCorrect;
+    });
 
     return (
       <div 
-        className="max-w-2xl mx-auto rounded-3xl border p-6 sm:p-8 shadow-sm text-center space-y-6 animate-fade-in pb-24 md:pb-8"
+        className="max-w-2xl mx-auto rounded-2xl border p-4 sm:p-6 sm:rounded-3xl shadow-sm text-center space-y-4 sm:space-y-6 animate-fade-in pb-24 md:pb-8"
         style={{
           backgroundColor: 'var(--card-bg)',
           borderColor: 'var(--border-color)',
@@ -349,32 +382,32 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
         }}
       >
         <div 
-          className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto shadow-xs"
+          className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mx-auto shadow-xs"
           style={{ backgroundColor: 'var(--accent-soft-bg)', color: 'var(--accent-color)' }}
         >
-          <Award className="w-8 h-8" />
+          <Award className="w-7 h-7 sm:w-8 sm:h-8" />
         </div>
 
         <div>
-          <div className="text-xs font-mono tabular-nums" style={{ color: 'var(--text-muted)' }}>
+          <div className="text-[11px] sm:text-xs font-mono tabular-nums" style={{ color: 'var(--text-muted)' }}>
             {selectedWeeks.length === 12 ? 'All 120 Questions' : `Weeks: ${selectedWeeks.join(', ')}`} Assessment
           </div>
-          <h2 className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>
+          <h2 className="text-xl sm:text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>
             Quiz Completed
           </h2>
           <div 
-            className="text-5xl font-extrabold font-mono tabular-nums mt-3"
+            className="text-4xl sm:text-5xl font-extrabold font-mono tabular-nums mt-2"
             style={{ color: 'var(--accent-color)' }}
           >
             {scorePct}%
           </div>
-          <div className="text-xs font-semibold mt-1" style={{ color: 'var(--correct-text)' }}>
+          <div className="text-[11px] sm:text-xs font-semibold mt-1" style={{ color: 'var(--correct-text)' }}>
             {correctCount} of {totalQuestions} answered correctly
           </div>
         </div>
 
         <div 
-          className="grid grid-cols-2 gap-3 p-4 rounded-xl border text-xs"
+          className="grid grid-cols-2 gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border text-[11px] sm:text-xs"
           style={{
             backgroundColor: 'var(--app-bg)',
             borderColor: 'var(--border-color)',
@@ -382,22 +415,23 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
         >
           <div>
             <div style={{ color: 'var(--text-muted)' }}>Time Elapsed</div>
-            <div className="text-base font-mono tabular-nums font-bold mt-0.5" style={{ color: 'var(--text-primary)' }}>
+            <div className="text-sm sm:text-base font-mono tabular-nums font-bold mt-0.5" style={{ color: 'var(--text-primary)' }}>
               {formatTime(secondsElapsed)}
             </div>
           </div>
           <div>
             <div style={{ color: 'var(--text-muted)' }}>Missed Items</div>
-            <div className="text-base font-mono tabular-nums font-bold mt-0.5" style={{ color: 'var(--incorrect-text)' }}>
+            <div className="text-sm sm:text-base font-mono tabular-nums font-bold mt-0.5" style={{ color: 'var(--incorrect-text)' }}>
               {missedQuestions.length}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <div className="flex flex-col gap-2.5 pt-2">
           <button
+            type="button"
             onClick={() => setReviewMode(true)}
-            className="w-full sm:w-auto px-4 py-2.5 rounded-xl border text-xs font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+            className="w-full h-12 px-4 rounded-2xl border text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
             style={{
               backgroundColor: 'var(--app-bg)',
               borderColor: 'var(--border-color)',
@@ -405,28 +439,46 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
             }}
           >
             <Eye className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-            <span>Review Answers</span>
+            <span>Review Full Solutions & Explanations</span>
           </button>
 
           {missedQuestions.length > 0 && (
             <button
+              type="button"
               onClick={() => onRetestMissed(missedQuestions)}
-              className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-white text-xs font-semibold shadow-xs transition-colors flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+              className="w-full h-12 px-4 rounded-2xl text-white text-xs sm:text-sm font-bold shadow-xs transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
               style={{ backgroundColor: 'var(--incorrect-border)' }}
             >
               <RotateCcw className="w-4 h-4" />
-              <span>Retest {missedQuestions.length} Mistakes</span>
+              <span>Retest {missedQuestions.length} Mistake{missedQuestions.length === 1 ? '' : 's'}</span>
             </button>
           )}
 
           <button
+            type="button"
             onClick={handleRandomizeNow}
-            className="w-full sm:w-auto px-4 py-2.5 rounded-xl text-white text-xs font-semibold shadow-xs transition-colors flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+            className="w-full h-12 px-4 rounded-2xl text-white text-xs sm:text-sm font-bold shadow-xs transition-all flex items-center justify-center gap-2 active:scale-[0.98] cursor-pointer"
             style={{ backgroundColor: 'var(--accent-color)' }}
           >
             <Shuffle className="w-4 h-4" />
-            <span>Retry (New Random Order)</span>
+            <span>Retry Assessment (New Random Order)</span>
           </button>
+
+          {onViewResults && (
+            <button
+              type="button"
+              onClick={onViewResults}
+              className="w-full h-12 px-4 rounded-2xl border text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.98]"
+              style={{
+                backgroundColor: 'var(--accent-soft-bg)',
+                borderColor: 'var(--accent-color)',
+                color: 'var(--accent-color)',
+              }}
+            >
+              <Award className="w-4 h-4" />
+              <span>View Saved in Results & Mistakes Center</span>
+            </button>
+          )}
         </div>
       </div>
     );
@@ -460,8 +512,9 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
 
         <div className="space-y-4">
           {preparedQuestions.map((q, i) => {
-            const userPick = userAnswers[q.id];
-            const isCorrect = userPick === q.correctOption;
+            const userPickText = userAnswers[q.id];
+            const status = checkAnswer(q, userPickText);
+            const isCorrect = status.isCorrect;
 
             return (
               <div
@@ -500,7 +553,7 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
                 <div className="space-y-2 text-xs">
                   {q.options.map((opt) => {
                     const isRightKey = opt.label === q.correctOption;
-                    const isUserChoice = opt.label === userPick;
+                    const isUserChoice = opt.text === userPickText;
 
                     let bg = 'var(--app-bg)';
                     let border = 'var(--border-color)';
@@ -561,9 +614,11 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
   }
 
   // --- ACTIVE QUIZ VIEW: Constrained to max-w-2xl (~65ch) for eye comfort ---
-  const currentAnswer = userAnswers[currentQ.id];
-  const isAnswered = !!currentAnswer;
-  const isCurrentCorrect = currentAnswer === currentQ.correctOption;
+  const currentAnswerText = userAnswers[currentQ.id];
+  const isAnswered = !!currentAnswerText;
+  const selectedOption = currentQ.options.find(o => o.text === currentAnswerText);
+  const selectedLabel = selectedOption ? selectedOption.label : null;
+  const isCurrentCorrect = selectedLabel === currentQ.correctOption;
   const isBookmarked = bookmarks.includes(currentQ.id);
 
   return (
@@ -826,7 +881,7 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
             let border = 'var(--border-color)';
 
             if (examMode === 'feedback' && hasAnswer) {
-              const right = userAnswers[q.id] === q.correctOption;
+              const right = checkAnswer(q, userAnswers[q.id]).isCorrect;
               bg = right ? 'var(--correct-bg)' : 'var(--incorrect-bg)';
               color = right ? 'var(--correct-text)' : 'var(--incorrect-text)';
               border = right ? 'var(--correct-border)' : 'var(--incorrect-border)';
@@ -904,25 +959,31 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
           {currentQ.questionText}
         </h3>
 
-        {/* Option Cards: text-base leading-normal py-3.5 px-4 rounded-xl border */}
+        {/* Option Cards: text-base leading-normal py-3.5 px-4 rounded-2xl border */}
         <div className="space-y-2.5 pt-1">
           {currentQ.options.map((opt) => {
-            const isSelected = currentAnswer === opt.label;
-            const isCorrect = opt.label === currentQ.correctOption;
+            const isSelected = currentAnswerText === opt.text;
+            const isKey = opt.label === currentQ.correctOption;
 
             let bg = 'var(--app-bg)';
             let border = 'var(--border-color)';
             let color = 'var(--text-secondary)';
+            let badgeBg = 'var(--hover-bg)';
+            let badgeColor = 'var(--text-secondary)';
 
             if (examMode === 'feedback' && isAnswered) {
-              if (isCorrect) {
+              if (isKey) {
                 bg = 'var(--correct-bg)';
                 border = 'var(--correct-border)';
                 color = 'var(--correct-text)';
-              } else if (isSelected && !isCorrect) {
+                badgeBg = 'var(--correct-border)';
+                badgeColor = '#ffffff';
+              } else if (isSelected && !isKey) {
                 bg = 'var(--incorrect-bg)';
                 border = 'var(--incorrect-border)';
                 color = 'var(--incorrect-text)';
+                badgeBg = 'var(--incorrect-border)';
+                badgeColor = '#ffffff';
               } else {
                 color = 'var(--text-muted)';
               }
@@ -930,6 +991,8 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
               bg = 'var(--accent-soft-bg)';
               border = 'var(--accent-color)';
               color = 'var(--text-primary)';
+              badgeBg = 'var(--accent-color)';
+              badgeColor = '#ffffff';
             }
 
             return (
@@ -938,7 +1001,7 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
                 type="button"
                 onClick={() => handleSelectOption(opt.label)}
                 disabled={examMode === 'feedback' && isAnswered}
-                className="w-full text-base leading-normal py-3.5 px-4 rounded-xl border transition-all duration-150 flex items-center justify-between gap-3 cursor-pointer select-none text-left"
+                className="w-full min-h-[52px] text-base leading-normal py-3 px-4 rounded-2xl border transition-all duration-150 flex items-center justify-between gap-3 cursor-pointer select-none text-left shadow-2xs active:scale-[0.99] disabled:active:scale-100"
                 style={{
                   backgroundColor: bg,
                   borderColor: border,
@@ -947,23 +1010,23 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
               >
                 <div className="flex items-center gap-3 flex-1">
                   <div
-                    className="w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs uppercase shrink-0 font-mono"
+                    className="w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs uppercase shrink-0 font-mono transition-colors"
                     style={{
-                      backgroundColor: isSelected ? 'var(--accent-color)' : 'var(--hover-bg)',
-                      color: isSelected ? '#ffffff' : 'var(--text-secondary)',
+                      backgroundColor: badgeBg,
+                      color: badgeColor,
                     }}
                   >
                     {opt.label}
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 font-medium">
                     {opt.text}
                   </div>
                 </div>
 
-                {examMode === 'feedback' && isAnswered && isCorrect && (
+                {examMode === 'feedback' && isAnswered && isKey && (
                   <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: 'var(--correct-border)' }} />
                 )}
-                {examMode === 'feedback' && isAnswered && isSelected && !isCorrect && (
+                {examMode === 'feedback' && isAnswered && isSelected && !isKey && (
                   <XCircle className="w-5 h-5 shrink-0" style={{ color: 'var(--incorrect-border)' }} />
                 )}
               </button>
@@ -971,59 +1034,45 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
           })}
         </div>
 
-        {/* Instant Feedback Educational Rationale Card */}
-        {examMode === 'feedback' && isAnswered && (
-          <div 
-            className="p-4 rounded-2xl border space-y-2 animate-fade-in text-xs leading-relaxed"
-            style={{
-              backgroundColor: isCurrentCorrect ? 'var(--correct-bg)' : 'var(--incorrect-bg)',
-              borderColor: isCurrentCorrect ? 'var(--correct-border)' : 'var(--incorrect-border)',
-              color: isCurrentCorrect ? 'var(--correct-text)' : 'var(--incorrect-text)',
-            }}
-          >
-            <div className="flex items-center justify-between font-bold">
-              <span className="flex items-center gap-1.5">
-                {isCurrentCorrect ? (
-                  <>
-                    <CheckCircle2 className="w-4 h-4" /> Correct Solution
-                  </>
-                ) : (
-                  <>
-                    <XCircle className="w-4 h-4" /> Solution: Option ({currentQ.correctOption.toUpperCase()})
-                  </>
-                )}
-              </span>
-              <span className="text-[11px] font-mono uppercase">Verified Key</span>
-            </div>
-            <p className="leading-relaxed">
-              <span className="font-bold">Explanation: </span>
-              {currentQ.explanation}
-            </p>
-          </div>
-        )}
-
-        {/* Navigation Buttons */}
+        {/* Navigation Action Buttons: Balanced, Equal Height, Touch-Optimized */}
         <div 
-          className="flex items-center justify-between pt-4 border-t"
+          className="flex items-center gap-2 sm:gap-3 pt-5 border-t"
           style={{ borderColor: 'var(--border-color)' }}
         >
           <button
+            type="button"
             onClick={handlePrevious}
             disabled={currentIndex === 0}
-            className="px-4 py-2 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1 h-12 px-3 sm:px-5 rounded-2xl border text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-xs active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed disabled:active:scale-100"
             style={{
               backgroundColor: 'var(--app-bg)',
               borderColor: 'var(--border-color)',
               color: 'var(--text-primary)',
             }}
           >
-            <ArrowLeft className="w-3.5 h-3.5" />
+            <ArrowLeft className="w-4 h-4 shrink-0" />
             <span>Previous</span>
           </button>
 
+          {/* Quick Bookmark Toggle right in the thumb zone */}
           <button
+            type="button"
+            onClick={() => onToggleBookmark(currentQ.id)}
+            className="h-12 w-12 rounded-2xl border flex items-center justify-center transition-colors cursor-pointer shrink-0 shadow-xs active:scale-95"
+            style={{
+              backgroundColor: isBookmarked ? 'var(--bookmark-bg)' : 'var(--app-bg)',
+              borderColor: isBookmarked ? 'var(--bookmark-color)' : 'var(--border-color)',
+              color: isBookmarked ? 'var(--bookmark-color)' : 'var(--text-muted)',
+            }}
+            title={isBookmarked ? 'Bookmarked (Tap to remove)' : 'Bookmark this question'}
+          >
+            {isBookmarked ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+          </button>
+
+          <button
+            type="button"
             onClick={handleNext}
-            className="px-6 py-2.5 rounded-xl text-white text-xs font-bold flex items-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer"
+            className="flex-[1.4] sm:flex-1 h-12 px-4 sm:px-6 rounded-2xl text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-xs transition-all active:scale-[0.98] cursor-pointer"
             style={{ backgroundColor: 'var(--accent-color)' }}
           >
             <span>
@@ -1031,7 +1080,7 @@ export const QuizEngineView: React.FC<QuizEngineViewProps> = ({
                 ? 'Finish Assessment'
                 : 'Next Question'}
             </span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-4 h-4 shrink-0" />
           </button>
         </div>
 

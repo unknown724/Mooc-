@@ -38,7 +38,6 @@ import {
 import { Navbar } from './components/Navbar';
 import { DashboardView } from './components/DashboardView';
 import { StudyReaderView } from './components/StudyReaderView';
-import { FlashcardView } from './components/FlashcardView';
 import { QuizEngineView } from './components/QuizEngineView';
 import { MistakeBankView } from './components/MistakeBankView';
 import { UploadPdfModal } from './components/UploadPdfModal';
@@ -83,7 +82,6 @@ export default function App() {
   
   // Filters
   const [readerWeekFilter, setReaderWeekFilter] = useState<number | 'all'>('all');
-  const [flashcardWeekFilter, setFlashcardWeekFilter] = useState<number | 'all'>('all');
   
   // Upload modal state
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -225,10 +223,7 @@ export default function App() {
     setCurrentView('reader');
   }, []);
 
-  const handleOpenFlashcards = useCallback((weekNum: number | 'all') => {
-    setFlashcardWeekFilter(weekNum);
-    setCurrentView('flashcards');
-  }, []);
+
 
   const handleLoadSingleWeek = useCallback((weekNum: number) => {
     const updated = loadSingleBuiltInWeek(weekNum, weeks);
@@ -461,17 +456,7 @@ export default function App() {
             questionStats={questionStats}
             onToggleBookmark={handleToggleBookmark}
             onSaveNote={handleSaveNote}
-            onOpenFlashcards={handleOpenFlashcards}
             initialWeekFilter={readerWeekFilter}
-          />
-        )}
-
-        {currentView === 'flashcards' && (
-          <FlashcardView
-            questions={allLoadedQuestions}
-            bookmarks={bookmarks}
-            onToggleBookmark={handleToggleBookmark}
-            initialWeek={flashcardWeekFilter}
           />
         )}
 
@@ -488,11 +473,13 @@ export default function App() {
             onSaveQuizResult={handleSaveQuizResult}
             onRetestMissed={handleRetestMissedQuestions}
             onExitQuiz={() => setCurrentView('dashboard')}
+            onViewResults={() => setCurrentView('mistakes')}
           />
         )}
 
         {currentView === 'mistakes' && (
           <MistakeBankView
+            quizHistory={quizHistory}
             mistakes={mistakes}
             bookmarks={bookmarks}
             allLoadedQuestions={allLoadedQuestions}
@@ -501,6 +488,10 @@ export default function App() {
             onRemoveMistake={handleRemoveMistake}
             onToggleBookmark={handleToggleBookmark}
             onOpenReader={() => setCurrentView('reader')}
+            onClearQuizHistory={() => {
+              setQuizHistory([]);
+              showToast('Quiz results history cleared.', 'info');
+            }}
           />
         )}
       </main>

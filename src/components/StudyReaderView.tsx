@@ -29,7 +29,6 @@ interface StudyReaderViewProps {
   questionStats?: Record<string, UserQuestionStats>;
   onToggleBookmark: (questionId: string) => void;
   onSaveNote?: (questionId: string, note: string) => void;
-  onOpenFlashcards?: (weekNum: number | 'all') => void;
   initialWeekFilter?: number | 'all';
 }
 
@@ -39,7 +38,6 @@ export const StudyReaderView: React.FC<StudyReaderViewProps> = ({
   questionStats = {},
   onToggleBookmark,
   onSaveNote,
-  onOpenFlashcards,
   initialWeekFilter = 'all',
 }) => {
   const [selectedWeek, setSelectedWeek] = useState<number | 'all'>(initialWeekFilter);
@@ -358,20 +356,6 @@ export const StudyReaderView: React.FC<StudyReaderViewProps> = ({
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              {onOpenFlashcards && (
-                <button
-                  onClick={() => onOpenFlashcards(selectedWeek)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all cursor-pointer hover:opacity-90"
-                  style={{
-                    backgroundColor: 'var(--app-bg)',
-                    borderColor: 'var(--border-color)',
-                    color: 'var(--accent-color)',
-                  }}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Flashcards</span>
-                </button>
-              )}
 
               {/* Enter Full View Button */}
               <button

@@ -66,13 +66,28 @@ export function loadSavedWeeks(): Record<number, WeekAssignment> {
       return initial;
     }
     const parsed = JSON.parse(raw);
-    // Ensure all 12 weeks exist
+    // Ensure all 12 weeks exist and sync latest canonical question data (e.g. w6_q5 corrections)
     const base = getInitialWeeksState();
     for (let i = 1; i <= 12; i++) {
       if (parsed[i]) {
+        const canonicalMap = new Map((base[i]?.questions || []).map((q) => [q.id, q]));
+        const syncedQuestions = (parsed[i].questions || base[i]?.questions || []).map((q: Question) => {
+          const canonical = canonicalMap.get(q.id);
+          if (canonical) {
+            return {
+              ...q,
+              options: canonical.options,
+              correctOption: canonical.correctOption,
+              explanation: canonical.explanation,
+            };
+          }
+          return q;
+        });
+
         base[i] = {
           ...base[i],
           ...parsed[i],
+          questions: syncedQuestions,
         };
       }
     }
@@ -111,7 +126,22 @@ export function saveBookmarks(bookmarks: string[]): void {
 export function loadMistakes(): Record<string, UserMistake> {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.MISTAKES);
-    return raw ? JSON.parse(raw) : {};
+    const mistakes: Record<string, UserMistake> = raw ? JSON.parse(raw) : {};
+    
+    // Auto-correct w6_q5 if user had picked sedimentary rocks (which is now confirmed correct)
+    if (mistakes['w6_q5']) {
+      const selected = mistakes['w6_q5'].selectedOption;
+      const selectedOptText = mistakes['w6_q5'].options?.find(o => o.label === selected)?.text?.toLowerCase() || '';
+      if (selected === 'a' || selectedOptText.includes('sedimentary')) {
+        delete mistakes['w6_q5'];
+        saveMistakes(mistakes);
+      } else {
+        mistakes['w6_q5'].correctOption = 'a';
+        saveMistakes(mistakes);
+      }
+    }
+
+    return mistakes;
   } catch {
     return {};
   }

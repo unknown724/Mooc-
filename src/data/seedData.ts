@@ -862,8 +862,8 @@ export const ALL_WEEKS_DATA: Record<number, Omit<WeekAssignment, 'isLoaded'>> = 
           { label: 'c', text: 'metamorphic rocks' },
           { label: 'd', text: 'b and c' },
         ],
-        correctOption: 'd',
-        explanation: 'The deep core and axial ranges of the Himalayas contain extensive granitic igneous intrusions and high-grade metamorphic complexes.',
+        correctOption: 'a',
+        explanation: 'The Himalayas are young fold mountains that formed from the tectonic uplift of sediments in the ancient Tethys geosyncline and are primarily comprised of sedimentary rocks.',
         topicTag: 'Indian Geology',
       },
       {

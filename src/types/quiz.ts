@@ -92,6 +92,14 @@ export interface QuizAnswerRecord {
   correctOption: OptionLabel;
   isCorrect: boolean;
   timeSpentSeconds: number;
+  questionText?: string;
+  selectedText?: string | null;
+  correctText?: string;
+  options?: OptionItem[];
+  explanation?: string;
+  topicTag?: string;
+  weekNumber?: number;
+  questionNumber?: number;
 }
 
 export interface QuizResult {
@@ -107,9 +115,8 @@ export interface QuizResult {
   answers: Record<string, QuizAnswerRecord>;
 }
 
-export type AppView = 'dashboard' | 'reader' | 'flashcards' | 'quiz' | 'mistakes' | 'cheatsheet';
+export type AppView = 'dashboard' | 'reader' | 'quiz' | 'mistakes' | 'cheatsheet';
 
-export type FlashcardConfidence = 'again' | 'hard' | 'good' | 'easy';
 
 export type AppTheme = 'warm' | 'daylight' | 'midnight';
 

@@ -14,7 +14,8 @@ import {
   Moon,
   Coffee,
   Type,
-  Zap
+  Zap,
+  Award
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -60,11 +61,10 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'cheatsheet', label: 'Cheat Sheet', icon: <Zap className="w-4 h-4 text-emerald-400" /> },
     { id: 'reader', label: 'Study Reader', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'quiz', label: 'Exam Quiz', icon: <GraduationCap className="w-4 h-4" /> },
-    { id: 'flashcards', label: 'Flashcards', icon: <Layers className="w-4 h-4" /> },
     { 
       id: 'mistakes', 
-      label: 'Mistake Bank', 
-      icon: <AlertTriangle className="w-4 h-4" />, 
+      label: 'Results & Mistakes', 
+      icon: <Award className="w-4 h-4 text-amber-500" />, 
       badge: mistakesCount > 0 ? mistakesCount : undefined 
     },
   ];
@@ -385,9 +385,9 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </header>
 
-      {/* Mobile Fixed Bottom Navigation Bar */}
+      {/* Mobile Fixed Bottom Navigation Bar (Balanced 5 Columns) */}
       <nav 
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t grid grid-cols-6 items-center h-16 px-1 safe-bottom backdrop-blur-xl"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t grid grid-cols-5 items-center h-16 px-1 safe-bottom backdrop-blur-xl shadow-lg"
         style={{
           backgroundColor: 'var(--card-bg)',
           borderColor: 'var(--border-color)',
@@ -399,25 +399,33 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               key={item.id}
               onClick={() => onSelectView(item.id)}
-              className={`flex flex-col items-center justify-center h-full min-h-[44px] gap-0.5 transition-colors relative cursor-pointer ${
+              className={`flex flex-col items-center justify-center h-full min-h-[48px] py-1 gap-1 transition-all relative cursor-pointer ${
                 isActive ? 'font-bold' : 'opacity-70 hover:opacity-100'
               }`}
               style={{
                 color: isActive ? 'var(--accent-color)' : 'var(--text-secondary)',
               }}
             >
-              <div className="relative">
+              <div className="relative flex items-center justify-center">
                 {item.icon}
                 {item.badge !== undefined && (
                   <span 
-                    className="absolute -top-1 -right-2 w-2 h-2 rounded-full"
+                    className="absolute -top-1.5 -right-2 min-w-3.5 h-3.5 px-1 rounded-full text-[9px] font-mono font-bold flex items-center justify-center text-white"
                     style={{ backgroundColor: 'var(--incorrect-border)' }}
-                  />
+                  >
+                    {item.badge}
+                  </span>
                 )}
               </div>
-              <span className="text-[9px] tracking-tight whitespace-nowrap">
-                {item.id === 'cheatsheet' ? 'Cheat' : item.id === 'quiz' ? 'Quiz' : item.label.split(' ')[0]}
+              <span className="text-[10px] tracking-tight leading-none whitespace-nowrap">
+                {item.id === 'cheatsheet' ? 'Cheat' : item.id === 'quiz' ? 'Quiz' : item.id === 'mistakes' ? 'Results' : item.label.split(' ')[0]}
               </span>
+              {isActive && (
+                <span 
+                  className="absolute bottom-1 w-4 h-0.5 rounded-full"
+                  style={{ backgroundColor: 'var(--accent-color)' }}
+                />
+              )}
             </button>
           );
         })}
