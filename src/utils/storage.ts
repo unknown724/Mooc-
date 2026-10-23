@@ -131,8 +131,8 @@ export function loadMistakes(): Record<string, UserMistake> {
     // Reconcile mistakes against canonical PDF solutions (e.g. w6_q5, w8_q8, w10_q2, w10_q6)
     const corrections: Array<{ id: string; correct: OptionLabel }> = [
       { id: 'w6_q5', correct: 'a' },
-      { id: 'w8_q8', correct: 'c' },
-      { id: 'w10_q2', correct: 'a' },
+      { id: 'w8_q8', correct: 'b' },
+      { id: 'w10_q2', correct: 'd' },
       { id: 'w10_q6', correct: 'c' },
     ];
 

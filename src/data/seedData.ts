@@ -1221,8 +1221,8 @@ export const ALL_WEEKS_DATA: Record<number, Omit<WeekAssignment, 'isLoaded'>> = 
           { label: 'c', text: 'very low' },
           { label: 'd', text: 'non-existent' },
         ],
-        correctOption: 'c',
-        explanation: 'According to the official Conservation Geography solutions, areas with very low threat levels are preferred for creating conservation reserves to maximize ecological stability and avoid severe anthropogenic disturbance.',
+        correctOption: 'b',
+        explanation: 'In systematic conservation planning and reserve triage, areas with a medium level of threat are prioritized because they benefit most from protection; areas with very high threat are often too degraded or difficult to protect, while areas with low threat face little imminent danger.',
         topicTag: 'Reserve Design',
       },
       {
@@ -1445,8 +1445,8 @@ export const ALL_WEEKS_DATA: Record<number, Omit<WeekAssignment, 'isLoaded'>> = 
           { label: 'c', text: 'reserve resources' },
           { label: 'd', text: 'stock resources' },
         ],
-        correctOption: 'a',
-        explanation: 'According to the official Conservation Geography solutions, hydrogen for nuclear fusion is categorized under potential resources.',
+        correctOption: 'd',
+        explanation: 'Hydrogen for nuclear fusion is classified as a stock resource: materials in the environment that have the potential to satisfy human needs, but we lack the requisite technology to harness them commercially.',
         topicTag: 'Resource Geography',
       },
       {
