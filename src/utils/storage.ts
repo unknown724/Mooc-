@@ -1,4 +1,4 @@
-import { WeekAssignment, UserMistake, QuizResult, Question, AppTheme, FontSizeSetting, UserQuestionStats } from '../types/quiz';
+import { WeekAssignment, UserMistake, QuizResult, Question, AppTheme, FontSizeSetting, UserQuestionStats, OptionLabel } from '../types/quiz';
 import { getInitialWeeksState, ALL_WEEKS_DATA } from '../data/seedData';
 
 const STORAGE_KEYS = {
@@ -128,17 +128,28 @@ export function loadMistakes(): Record<string, UserMistake> {
     const raw = localStorage.getItem(STORAGE_KEYS.MISTAKES);
     const mistakes: Record<string, UserMistake> = raw ? JSON.parse(raw) : {};
     
-    // Auto-correct w6_q5 if user had picked sedimentary rocks (which is now confirmed correct)
-    if (mistakes['w6_q5']) {
-      const selected = mistakes['w6_q5'].selectedOption;
-      const selectedOptText = mistakes['w6_q5'].options?.find(o => o.label === selected)?.text?.toLowerCase() || '';
-      if (selected === 'a' || selectedOptText.includes('sedimentary')) {
-        delete mistakes['w6_q5'];
-        saveMistakes(mistakes);
-      } else {
-        mistakes['w6_q5'].correctOption = 'a';
-        saveMistakes(mistakes);
+    // Reconcile mistakes against canonical PDF solutions (e.g. w6_q5, w8_q8, w10_q2, w10_q6)
+    const corrections: Array<{ id: string; correct: OptionLabel }> = [
+      { id: 'w6_q5', correct: 'a' },
+      { id: 'w8_q8', correct: 'c' },
+      { id: 'w10_q2', correct: 'a' },
+      { id: 'w10_q6', correct: 'c' },
+    ];
+
+    let changed = false;
+    for (const item of corrections) {
+      if (mistakes[item.id]) {
+        if (mistakes[item.id].selectedOption === item.correct) {
+          delete mistakes[item.id];
+          changed = true;
+        } else if (mistakes[item.id].correctOption !== item.correct) {
+          mistakes[item.id].correctOption = item.correct;
+          changed = true;
+        }
       }
+    }
+    if (changed) {
+      saveMistakes(mistakes);
     }
 
     return mistakes;

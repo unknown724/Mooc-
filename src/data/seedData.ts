@@ -1221,8 +1221,8 @@ export const ALL_WEEKS_DATA: Record<number, Omit<WeekAssignment, 'isLoaded'>> = 
           { label: 'c', text: 'very low' },
           { label: 'd', text: 'non-existent' },
         ],
-        correctOption: 'a',
-        explanation: 'Priority conservation triage targets areas facing high imminent threats to prevent irreversible biodiversity loss.',
+        correctOption: 'c',
+        explanation: 'According to the official Conservation Geography solutions, areas with very low threat levels are preferred for creating conservation reserves to maximize ecological stability and avoid severe anthropogenic disturbance.',
         topicTag: 'Reserve Design',
       },
       {
@@ -1445,8 +1445,8 @@ export const ALL_WEEKS_DATA: Record<number, Omit<WeekAssignment, 'isLoaded'>> = 
           { label: 'c', text: 'reserve resources' },
           { label: 'd', text: 'stock resources' },
         ],
-        correctOption: 'd',
-        explanation: 'Stock resources exist in nature but cannot yet be harnessed commercially because the necessary technology is not sufficiently developed.',
+        correctOption: 'a',
+        explanation: 'According to the official Conservation Geography solutions, hydrogen for nuclear fusion is categorized under potential resources.',
         topicTag: 'Resource Geography',
       },
       {
@@ -1505,8 +1505,8 @@ export const ALL_WEEKS_DATA: Record<number, Omit<WeekAssignment, 'isLoaded'>> = 
           { label: 'c', text: 'reserve resources' },
           { label: 'd', text: 'stock resources' },
         ],
-        correctOption: 'a',
-        explanation: 'Sub-economic or low-grade ores are potential resources that may become economically extractable when market prices increase or extraction improves.',
+        correctOption: 'c',
+        explanation: 'According to the official Conservation Geography solutions, low concentration ores come under the category of reserve resources.',
         topicTag: 'Resource Geography',
       },
       {
